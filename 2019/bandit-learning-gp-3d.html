@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html>
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="IE=edge" http-equiv="X-UA-Compatible"/>
+  <meta content="width=device-width, initial-scale=1" name="viewport"/>
+  <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async="" src="https://www.googletagmanager.com/gtag/js?id=None">
+  </script>
+  <script>
+   window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'None');
+  </script>
+  <meta content="" name="description"/>
+  <meta content="Hemanta Sharma" name="author"/>
+  <title>
+   test
+  </title>
+  <link href="../../assets/css/bootstrap.min.css" rel="stylesheet"/>
+  <link href="../../assets/css/custom.css" rel="stylesheet"/>
+  <script async="" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS_HTML" type="text/javascript">
+  </script>
+  <!-- MathJax configuration -->
+  <script type="text/x-mathjax-config">
+   MathJax.Hub.Config({
+                tex2jax: {
+                    inlineMath: [ ["$","$"], ["\\(","\\)"] ],
+                    displayMath: [ ["$$",'$$'], ["\\[","\\]"] ],
+                    processEscapes: true,
+                    processEnvironments: true
+                },
+                // Center justify equations in code and markdown cells. Elsewhere
+                // we use CSS to left justify single line equations in code cells.
+                displayAlign: 'center',
+                "HTML-CSS": {
+                    styles: {'.MathJax_Display': {"margin": 0}},
+                    linebreaks: { automatic: true }
+                }
+            });
+  </script>
+ </head>
+ <body>
+  <nav class="navbar navbar-default">
+   <div class="container text-center">
+    <div class="navbar-collapse" id="navbar">
+     <ul class="nav navbar-nav">
+      <li>
+       <a href="../../index.html">
+        Home
+       </a>
+      </li>
+      <li>
+       <a href="../index.html">
+        Blog
+       </a>
+      </li>
+      <li>
+       <a href="../../projects.html/">
+        Projects
+       </a>
+      </li>
+     </ul>
+    </div>
+   </div>
+  </nav>
+  <div id="content">
+   <div class="cell border-box-sizing text_cell rendered">
+    <div class="prompt input_prompt">
+    </div>
+    <div class="inner_cell">
+     <div class="text_cell_render border-box-sizing rendered_html">
+      <h3 id="2d-problem">
+       2d problem
+       <a class="anchor-link" href="#2d-problem">
+        &para;
+       </a>
+      </h3>
+      <p>
+       Use data from:
+       <a href="http://db.csail.mit.edu/labdata/labdata.html">
+        http://db.csail.mit.edu/labdata/labdata.html
+       </a>
+      </p>
+      <ul>
+       <li>
+        <strong>
+         Was not able to load the site. Using random synthesized temperature data
+        </strong>
+       </li>
+       <li>
+        <strong>
+         SKlearn GP for 3 dimentions not trivial
+        </strong>
+       </li>
+      </ul>
+     </div>
+    </div>
+   </div>
+   <div class="cell border-box-sizing code_cell rendered">
+    <div class="input">
+     <div class="prompt input_prompt">
+      In&nbsp;[108]:
+     </div>
+     <div class="inner_cell">
+      <div class="input_area">
+       <div class="highlight hl-ipython3">
+        <pre class="prettyprint"><span></span><span class="c1"># imports for 3d plots</span>
+<span class="kn">from</span> <span class="nn">mpl_toolkits.mplot3d.axes3d</span> <span class="kn">import</span> <span class="n">get_test_data</span>
+<span class="kn">from</span> <span class="nn">mpl_toolkits.mplot3d</span> <span class="kn">import</span> <span class="n">Axes3D</span>
+<span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">cm</span>
+</pre>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+   <div class="cell border-box-sizing code_cell rendered">
+    <div class="input">
+     <div class="prompt input_prompt">
+      In&nbsp;[109]:
+     </div>
+     <div class="inner_cell">
+      <div class="input_area">
+       <div class="highlight hl-ipython3">
+        <pre class="prettyprint"><span></span><span class="k">def</span> <span class="nf">f2d</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+    <span class="k">return</span> <span class="mi">2</span><span class="o">*</span><span class="p">((</span><span class="n">x</span><span class="o">-</span><span class="mi">3</span><span class="p">)</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">x</span><span class="o">-</span><span class="mi">3</span><span class="p">))</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">-</span> <span class="mf">0.5</span><span class="o">*</span><span class="n">x</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">y</span><span class="o">+</span><span class="mi">3</span><span class="p">)</span> <span class="o">+</span> <span class="n">y</span><span class="o">**</span><span class="p">(</span><span class="mf">1.2</span><span class="p">)</span>
+</pre>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+   <div class="cell border-box-sizing code_cell rendered">
+    <div class="input">
+     <div class="prompt input_prompt">
+      In&nbsp;[110]:
+     </div>
+     <div class="inner_cell">
+      <div class="input_area">
+       <div class="highlight hl-ipython3">
+        <pre class="prettyprint"><span></span><span class="c1"># Showing the data</span>
+<span class="n">granularity</span> <span class="o">=</span> <span class="mi">20</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="n">granularity</span><span class="p">)</span>
+<span class="n">Y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="n">granularity</span><span class="p">)</span>
+</pre>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+   <div class="cell border-box-sizing code_cell rendered">
+    <div class="input">
+     <div class="prompt input_prompt">
+      In&nbsp;[112]:
+     </div>
+     <div class="inner_cell">
+      <div class="input_area">
+       <div class="highlight hl-ipython3">
+        <pre class="prettyprint"><span></span><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">16</span><span class="p">,</span> <span class="mi">7</span><span class="p">))</span>
+<span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">projection</span><span class="o">=</span><span class="s1">'3d'</span><span class="p">)</span>
+<span class="n">XX</span><span class="p">,</span> <span class="n">YY</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">)</span>
+<span class="n">Z</span> <span class="o">=</span> <span class="n">f2d</span><span class="p">(</span><span class="n">XX</span><span class="p">,</span> <span class="n">YY</span><span class="p">)</span>
+<span class="n">surf</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">plot_surface</span><span class="p">(</span><span class="n">XX</span><span class="p">,</span> <span class="n">YY</span><span class="p">,</span> <span class="n">Z</span><span class="p">,</span> <span class="n">rstride</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">cstride</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="n">cm</span><span class="o">.</span><span class="n">coolwarm</span><span class="p">,</span>
+                       <span class="n">linewidth</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">antialiased</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">"Ground Truth"</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">"X Locations"</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">"Y Locations"</span><span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">surf</span><span class="p">,</span> <span class="n">shrink</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">aspect</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre>
+       </div>
+      </div>
+     </div>
+    </div>
+    <div class="output_wrapper">
+     <div class="output">
+      <div class="output_area">
+       <div class="prompt">
+       </div>
+       <div class="output_png output_subarea">
+        <img src="../images/2019/bandit-learning-gp-3d/image_1.png"/>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+   <div class="cell border-box-sizing text_cell rendered">
+    <div class="prompt input_prompt">
+    </div>
+    <div class="inner_cell">
+     <div class="text_cell_render border-box-sizing rendered_html">
+      <p>
+       @ TODO below.
+      </p>
+     </div>
+    </div>
+   </div>
+   <div class="cell border-box-sizing text_cell rendered">
+    <div class="prompt input_prompt">
+    </div>
+    <div class="inner_cell">
+     <div class="text_cell_render border-box-sizing rendered_html">
+      <p>
+       Now we have 2D data!
+      </p>
+     </div>
+    </div>
+   </div>
+   <div class="cell border-box-sizing code_cell rendered">
+    <div class="input">
+     <div class="prompt input_prompt">
+      In&nbsp;[113]:
+     </div>
+     <div class="inner_cell">
+      <div class="input_area">
+       <div class="highlight hl-ipython3">
+        <pre class="prettyprint"><span></span><span class="c1"># https://matplotlib.org/3.1.0/gallery/mplot3d/subplot3d.html</span>
+
+<span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">18</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
+
+<span class="c1">#===============</span>
+<span class="c1">#  First subplot</span>
+<span class="c1">#===============</span>
+<span class="c1"># set up the axes for the first plot</span>
+<span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">projection</span><span class="o">=</span><span class="s1">'3d'</span><span class="p">)</span>
+
+<span class="c1"># plot a 3D surface like in the example mplot3d/surface3d_demo</span>
+<span class="n">XX</span><span class="p">,</span> <span class="n">YY</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">)</span>
+<span class="n">surf</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">plot_surface</span><span class="p">(</span><span class="n">XX</span><span class="p">,</span> <span class="n">YY</span><span class="p">,</span> <span class="n">Z</span><span class="p">,</span> <span class="n">rstride</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">cstride</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="n">cm</span><span class="o">.</span><span class="n">coolwarm</span><span class="p">,</span>
+                       <span class="n">linewidth</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">antialiased</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="c1"># ax.set_zlim(-1.01, 1.01)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">surf</span><span class="p">,</span> <span class="n">shrink</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">aspect</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+
+<span class="c1">#===============</span>
+<span class="c1"># Second subplot</span>
+<span class="c1">#===============</span>
+<span class="c1"># set up the axes for the second plot</span>
+<span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">projection</span><span class="o">=</span><span class="s1">'3d'</span><span class="p">)</span>
+
+<span class="c1"># plot a 3D wireframe like in the example mplot3d/wire3d_demo</span>
+<span class="n">XX</span><span class="p">,</span> <span class="n">YY</span><span class="p">,</span> <span class="n">Z</span> <span class="o">=</span> <span class="n">get_test_data</span><span class="p">(</span><span class="mf">0.05</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot_wireframe</span><span class="p">(</span><span class="n">XX</span><span class="p">,</span> <span class="n">YY</span><span class="p">,</span> <span class="n">Z</span><span class="p">,</span> <span class="n">rstride</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">cstride</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+   <div class="cell border-box-sizing code_cell rendered">
+    <div class="input">
+     <div class="prompt input_prompt">
+      In&nbsp;[106]:
+     </div>
+     <div class="inner_cell">
+      <div class="input_area">
+       <div class="highlight hl-ipython3">
+        <pre class="prettyprint"><span></span><span class="n">XY</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">XX</span><span class="o">.</span><span class="n">flatten</span><span class="p">(),</span> <span class="n">YY</span><span class="o">.</span><span class="n">flatten</span><span class="p">()])</span><span class="o">.</span><span class="n">T</span> <span class="c1"># all points</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">XY</span>
+</pre>
+       </div>
+      </div>
+     </div>
+    </div>
+    <div class="output_wrapper">
+     <div class="output">
+      <div class="output_area">
+       <div class="prompt output_prompt">
+        Out[106]:
+       </div>
+       <div class="output_text output_subarea output_execute_result">
+        <pre class="prettyprint">array([[ 0.,  0.],
+       [10.,  0.],
+       [ 0., 10.],
+       [10., 10.]])</pre>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+   <div class="cell border-box-sizing code_cell rendered">
+    <div class="input">
+     <div class="prompt input_prompt">
+      In&nbsp;[116]:
+     </div>
+     <div class="inner_cell">
+      <div class="input_area">
+       <div class="highlight hl-ipython3">
+        <pre class="prettyprint"><span></span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+</pre>
+       </div>
+      </div>
+     </div>
+    </div>
+    <div class="output_wrapper">
+     <div class="output">
+      <div class="output_area">
+       <div class="prompt output_prompt">
+        Out[116]:
+       </div>
+       <div class="output_text output_subarea output_execute_result">
+        <pre class="prettyprint">array([10.,  0.])</pre>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+   <div class="cell border-box-sizing code_cell rendered">
+    <div class="input">
+     <div class="prompt input_prompt">
+      In&nbsp;[&nbsp;]:
+     </div>
+     <div class="inner_cell">
+      <div class="input_area">
+       <div class="highlight hl-ipython3">
+        <pre class="prettyprint"><span></span><span class="k">def</span> <span class="nf">plot_acquisition2d</span><span class="p">(</span>
+        <span class="n">train_X</span><span class="p">,</span> <span class="n">train_y</span><span class="p">,</span>
+        <span class="n">acq_class</span><span class="p">,</span> <span class="n">acq_params</span><span class="o">=</span><span class="p">{},</span>
+        <span class="n">ylim0</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">xlim0</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">ylim1</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">xlim1</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">y1scale</span><span class="o">=</span><span class="s1">'linear'</span><span class="p">,</span> <span class="n">it</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span>
+        <span class="n">seed</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="p">):</span>
+    <span class="sd">"""acq_params would contain the parameters for our acq_fn"""</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="n">seed</span><span class="p">)</span>
+    <span class="c1"># for storing the max till it iters</span>
+    <span class="n">max_till_now</span> <span class="o">=</span> <span class="p">[]</span>
+    
+    <span class="c1"># Stopping criteria is 10 iterations</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">it</span><span class="p">):</span>
+        
+        <span class="c1"># https://matplotlib.org/3.1.0/gallery/mplot3d/subplot3d.html</span>
+
+        <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">18</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
+
+        <span class="c1">#===============</span>
+        <span class="c1">#  First subplot</span>
+        <span class="c1">#===============</span>
+        <span class="c1"># set up the axes for the first plot</span>
+        <span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">projection</span><span class="o">=</span><span class="s1">'3d'</span><span class="p">)</span>
+
+        <span class="c1"># plot a 3D surface like in the example mplot3d/surface3d_demo</span>
+        <span class="n">XX</span><span class="p">,</span> <span class="n">YY</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">)</span>
+        <span class="n">surf</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">plot_surface</span><span class="p">(</span><span class="n">XX</span><span class="p">,</span> <span class="n">YY</span><span class="p">,</span> <span class="n">Z</span><span class="p">,</span> <span class="n">rstride</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">cstride</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="n">cm</span><span class="o">.</span><span class="n">coolwarm</span><span class="p">,</span>
+                               <span class="n">linewidth</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">antialiased</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="c1"># ax.set_zlim(-1.01, 1.01)</span>
+        <span class="n">fig</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">surf</span><span class="p">,</span> <span class="n">shrink</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">aspect</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+
+        <span class="c1">#===============</span>
+        <span class="c1"># Second subplot</span>
+        <span class="c1">#===============</span>
+        <span class="c1"># set up the axes for the second plot</span>
+        <span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">projection</span><span class="o">=</span><span class="s1">'3d'</span><span class="p">)</span>
+
+        <span class="c1"># plot a 3D wireframe like in the example mplot3d/wire3d_demo</span>
+        <span class="n">XX</span><span class="p">,</span> <span class="n">YY</span><span class="p">,</span> <span class="n">Z</span> <span class="o">=</span> <span class="n">get_test_data</span><span class="p">(</span><span class="mf">0.05</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">plot_wireframe</span><span class="p">(</span><span class="n">XX</span><span class="p">,</span> <span class="n">YY</span><span class="p">,</span> <span class="n">Z</span><span class="p">,</span> <span class="n">rstride</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">cstride</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+
+        <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+        <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">nrows</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">sharex</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_yscale</span><span class="p">(</span><span class="n">y1scale</span><span class="p">)</span>
+        
+        <span class="c1"># limits</span>
+        <span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="n">ylim0</span><span class="p">)</span> <span class="k">if</span> <span class="n">ylim0</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="n">f</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">-.</span><span class="mi">5</span><span class="p">),</span> <span class="nb">max</span><span class="p">(</span><span class="n">f</span><span class="p">(</span><span class="n">x</span><span class="p">))</span><span class="o">+.</span><span class="mi">5</span><span class="p">)</span>
+        <span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="n">xlim0</span><span class="p">)</span> <span class="k">if</span> <span class="n">xlim0</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">-.</span><span class="mi">5</span><span class="p">,</span> <span class="nb">max</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">+.</span><span class="mi">5</span><span class="p">)</span>
+        <span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="n">ylim1</span><span class="p">)</span> <span class="k">if</span> <span class="n">ylim1</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">None</span>
+        <span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="n">xlim1</span><span class="p">)</span> <span class="k">if</span> <span class="n">xlim1</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">-.</span><span class="mi">5</span><span class="p">,</span> <span class="nb">max</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">+.</span><span class="mi">5</span><span class="p">)</span>
+        
+        
+        <span class="c1"># fitting</span>
+        <span class="n">gp</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">train_X</span><span class="p">,</span> <span class="n">train_y</span><span class="o">.</span><span class="n">flatten</span><span class="p">())</span>
+        
+        <span class="c1"># plot Acquisition</span>
+        <span class="n">acq_obj</span> <span class="o">=</span> <span class="n">acq_class</span><span class="p">()</span>
+        <span class="n">acquisition</span> <span class="o">=</span> <span class="n">acq_obj</span><span class="p">(</span><span class="n">gp</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="o">**</span><span class="n">acq_params</span><span class="p">,</span> <span class="n">train_y</span><span class="o">=</span><span class="n">train_y</span><span class="p">)</span>
+        <span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">acquisition</span><span class="p">,</span> 
+                   <span class="n">label</span><span class="o">=</span><span class="s1">'Acquisition function'</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">'green'</span><span class="p">)</span>
+        
+        <span class="c1"># predict on current pool set</span>
+        <span class="n">y_pred</span><span class="p">,</span> <span class="n">sigma</span> <span class="o">=</span> <span class="n">gp</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">return_std</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">,</span> <span class="s1">'k'</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">'Predicted'</span><span class="p">)</span>
+        <span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">f</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="s1">'purple'</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">'GT'</span><span class="p">)</span>
+        <span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">"X"</span><span class="p">)</span>
+        <span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">"Gold content"</span><span class="p">)</span>
+        <span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">fill_between</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">flatten</span><span class="p">(),</span> <span class="n">y_pred</span><span class="o">+</span><span class="n">sigma</span><span class="p">,</span>
+                           <span class="n">y_pred</span><span class="o">-</span><span class="n">sigma</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">'gray'</span><span class="p">,</span>
+                           <span class="n">alpha</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s1">'$\mu \pm \sigma$'</span><span class="p">)</span>
+        <span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">train_X</span><span class="p">,</span> <span class="n">train_y</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">'black'</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">zorder</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">'Train points'</span><span class="p">)</span>
+        <span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">bbox_to_anchor</span><span class="o">=</span><span class="p">(</span><span class="mf">1.04</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span> <span class="n">loc</span><span class="o">=</span><span class="s2">"upper left"</span><span class="p">)</span>
+        <span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">acq_obj</span><span class="p">))</span>
+        <span class="n">hyperparams</span> <span class="o">=</span> <span class="s1">' | '</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">k</span><span class="p">)</span><span class="o">+</span><span class="s1">': '</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">acq_params</span><span class="o">.</span><span class="n">items</span><span class="p">()])</span>
+        <span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Iteration: </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2"> &amp; HParam(s) &rarr; "</span> <span class="o">+</span> <span class="n">hyperparams</span><span class="p">)</span>
+        
+        <span class="c1"># Choose the next point with highest sigma</span>
+        <span class="n">max_mu</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">train_y</span><span class="p">)</span><span class="o">.</span><span class="n">flatten</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">next_ix</span> <span class="o">=</span> <span class="n">rargmax</span><span class="p">(</span><span class="n">acquisition</span><span class="p">)</span>
+        <span class="n">next_x</span> <span class="o">=</span> <span class="n">x</span><span class="p">[</span><span class="n">next_ix</span><span class="p">]</span>
+
+        <span class="c1"># Add new point with highest uncertainty to the pool set</span>
+        <span class="n">train_X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="n">train_X</span><span class="p">,</span> <span class="p">[</span><span class="n">x</span><span class="p">[</span><span class="n">next_ix</span><span class="p">]]])</span>
+        <span class="n">train_y</span> <span class="o">=</span> <span class="n">f</span><span class="p">(</span><span class="n">train_X</span><span class="p">)</span>
+
+        <span class="c1"># Add new point with highest uncertainty to the pool set</span>
+        <span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">next_ix</span><span class="p">],</span> <span class="n">acquisition</span><span class="p">[</span><span class="n">next_ix</span><span class="p">],</span> <span class="n">marker</span><span class="o">=</span><span class="s1">'X'</span><span class="p">,</span><span class="n">s</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span>
+                      <span class="n">c</span><span class="o">=</span><span class="s1">'orange'</span><span class="p">,</span> <span class="n">zorder</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">'maxima (tie randomly broken)'</span><span class="p">)</span>
+        <span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">next_ix</span><span class="p">],</span> <span class="n">f</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">next_ix</span><span class="p">]),</span> <span class="n">color</span><span class="o">=</span><span class="s1">'red'</span><span class="p">,</span>
+                      <span class="n">s</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span> <span class="n">zorder</span><span class="o">=-</span><span class="mi">10</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">'New Added points'</span><span class="p">)</span>
+        <span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">bbox_to_anchor</span><span class="o">=</span><span class="p">(</span><span class="mf">1.1</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span> <span class="n">loc</span><span class="o">=</span><span class="s2">"upper left"</span><span class="p">)</span>
+        <span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">bbox_to_anchor</span><span class="o">=</span><span class="p">(</span><span class="mf">1.1</span><span class="p">,</span><span class="mf">0.5</span><span class="p">),</span> <span class="n">loc</span><span class="o">=</span><span class="s2">"upper left"</span><span class="p">)</span>
+        <span class="n">train_X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="n">train_X</span><span class="p">,</span> <span class="p">[</span><span class="n">x</span><span class="p">[</span><span class="n">next_ix</span><span class="p">]]])</span>
+        <span class="n">train_y</span> <span class="o">=</span> <span class="n">f</span><span class="p">(</span><span class="n">train_X</span><span class="p">)</span>
+        <span class="n">max_till_now</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">train_y</span><span class="p">))</span>
+        <span class="n">format_axes</span><span class="p">(</span><span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">format_axes</span><span class="p">(</span><span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+
+        <span class="n">acq_params_str</span> <span class="o">=</span> <span class="s1">'-'</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">acq_params</span><span class="o">.</span><span class="n">values</span><span class="p">())))</span>
+        <span class="n">dirName</span> <span class="o">=</span> <span class="s1">'./MAB_pngs/'</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">acq_obj</span><span class="p">)</span><span class="o">+</span><span class="s1">'/'</span><span class="o">+</span><span class="n">acq_params_str</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">dirName</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">dirName</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">.png"</span><span class="p">,</span> <span class="n">bbox_inches</span><span class="o">=</span><span class="s2">"tight"</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">dirName</span><span class="p">,</span> <span class="n">max_till_now</span>
+</pre>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+   <div class="cell border-box-sizing code_cell rendered">
+    <div class="input">
+     <div class="prompt input_prompt">
+      In&nbsp;[46]:
+     </div>
+     <div class="inner_cell">
+      <div class="input_area">
+       <div class="highlight hl-ipython3">
+        <pre class="prettyprint"><span></span><span class="kn">from</span> <span class="nn">sklearn.gaussian_process</span> <span class="kn">import</span> <span class="n">GaussianProcessRegressor</span>
+</pre>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+   <div class="cell border-box-sizing code_cell rendered">
+    <div class="input">
+     <div class="prompt input_prompt">
+      In&nbsp;[47]:
+     </div>
+     <div class="inner_cell">
+      <div class="input_area">
+       <div class="highlight hl-ipython3">
+        <pre class="prettyprint"><span></span><span class="n">gp</span> <span class="o">=</span> <span class="n">GaussianProcessRegressor</span><span class="p">()</span>
+</pre>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+   <div class="cell border-box-sizing code_cell rendered">
+    <div class="input">
+     <div class="prompt input_prompt">
+      In&nbsp;[48]:
+     </div>
+     <div class="inner_cell">
+      <div class="input_area">
+       <div class="highlight hl-ipython3">
+        <pre class="prettyprint"><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+</pre>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+   <div class="cell border-box-sizing code_cell rendered">
+    <div class="input">
+     <div class="prompt input_prompt">
+      In&nbsp;[49]:
+     </div>
+     <div class="inner_cell">
+      <div class="input_area">
+       <div class="highlight hl-ipython3">
+        <pre class="prettyprint"><span></span><span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+</pre>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+   <div class="cell border-box-sizing code_cell rendered">
+    <div class="input">
+     <div class="prompt input_prompt">
+      In&nbsp;[50]:
+     </div>
+     <div class="inner_cell">
+      <div class="input_area">
+       <div class="highlight hl-ipython3">
+        <pre class="prettyprint"><span></span><span class="n">X</span><span class="o">.</span><span class="n">shape</span>
+</pre>
+       </div>
+      </div>
+     </div>
+    </div>
+    <div class="output_wrapper">
+     <div class="output">
+      <div class="output_area">
+       <div class="prompt output_prompt">
+        Out[50]:
+       </div>
+       <div class="output_text output_subarea output_execute_result">
+        <pre class="prettyprint">(10, 2)</pre>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+   <div class="cell border-box-sizing code_cell rendered">
+    <div class="input">
+     <div class="prompt input_prompt">
+      In&nbsp;[52]:
+     </div>
+     <div class="inner_cell">
+      <div class="input_area">
+       <div class="highlight hl-ipython3">
+        <pre class="prettyprint"><span></span><span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+<span class="n">y</span><span class="o">.</span><span class="n">shape</span>
+</pre>
+       </div>
+      </div>
+     </div>
+    </div>
+    <div class="output_wrapper">
+     <div class="output">
+      <div class="output_area">
+       <div class="prompt output_prompt">
+        Out[52]:
+       </div>
+       <div class="output_text output_subarea output_execute_result">
+        <pre class="prettyprint">(10,)</pre>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+   <div class="cell border-box-sizing code_cell rendered">
+    <div class="input">
+     <div class="prompt input_prompt">
+      In&nbsp;[53]:
+     </div>
+     <div class="inner_cell">
+      <div class="input_area">
+       <div class="highlight hl-ipython3">
+        <pre class="prettyprint"><span></span><span class="n">gp</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+</pre>
+       </div>
+      </div>
+     </div>
+    </div>
+    <div class="output_wrapper">
+     <div class="output">
+      <div class="output_area">
+       <div class="prompt output_prompt">
+        Out[53]:
+       </div>
+       <div class="output_text output_subarea output_execute_result">
+        <pre class="prettyprint">GaussianProcessRegressor(alpha=1e-10, copy_X_train=True, kernel=None,
+                         n_restarts_optimizer=0, normalize_y=False,
+                         optimizer='fmin_l_bfgs_b', random_state=None)</pre>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+   <div class="cell border-box-sizing code_cell rendered">
+    <div class="input">
+     <div class="prompt input_prompt">
+      In&nbsp;[54]:
+     </div>
+     <div class="inner_cell">
+      <div class="input_area">
+       <div class="highlight hl-ipython3">
+        <pre class="prettyprint"><span></span><span class="n">gp</span><span class="o">.</span><span class="n">predict</span><span class="p">([[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">]])</span>
+</pre>
+       </div>
+      </div>
+     </div>
+    </div>
+    <div class="output_wrapper">
+     <div class="output">
+      <div class="output_area">
+       <div class="prompt output_prompt">
+        Out[54]:
+       </div>
+       <div class="output_text output_subarea output_execute_result">
+        <pre class="prettyprint">array([0.06673904])</pre>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+   <div class="cell border-box-sizing code_cell rendered">
+    <div class="input">
+     <div class="prompt input_prompt">
+      In&nbsp;[&nbsp;]:
+     </div>
+     <div class="inner_cell">
+      <div class="input_area">
+       <div class="highlight hl-ipython3">
+        <pre class="prettyprint"><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+</pre>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+   <div class="cell border-box-sizing code_cell rendered">
+    <div class="input">
+     <div class="prompt input_prompt">
+      In&nbsp;[&nbsp;]:
+     </div>
+     <div class="inner_cell">
+      <div class="input_area">
+       <div class="highlight hl-ipython3">
+        <pre class="prettyprint"><span></span><span class="n">Z</span><span class="o">.</span><span class="n">shape</span>
+</pre>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+   <div class="cell border-box-sizing code_cell rendered">
+    <div class="input">
+     <div class="prompt input_prompt">
+      In&nbsp;[&nbsp;]:
+     </div>
+     <div class="inner_cell">
+      <div class="input_area">
+       <div class="highlight hl-ipython3">
+        <pre class="prettyprint"><span></span><span class="n">gp</span><span class="o">.</span><span class="n">f</span>
+</pre>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+   <div class="cell border-box-sizing code_cell rendered">
+    <div class="input">
+     <div class="prompt input_prompt">
+      In&nbsp;[&nbsp;]:
+     </div>
+     <div class="inner_cell">
+      <div class="input_area">
+       <div class="highlight hl-ipython3">
+        <pre class="prettyprint"><span></span>
+</pre>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+   <script crossorigin="anonymous" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" src="https://code.jquery.com/jquery-3.2.1.min.js">
+   </script>
+   <script src="https://cdn.jsdelivr.net/jquery.jssocials/1.4.0/jssocials.min.js" type="text/javascript">
+   </script>
+   <link href="https://cdn.jsdelivr.net/jquery.jssocials/1.4.0/jssocials.css" rel="stylesheet" type="text/css"/>
+   <link href="https://cdn.jsdelivr.net/jquery.jssocials/1.4.0/jssocials-theme-flat.css" rel="stylesheet" type="text/css"/>
+   <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"/>
+   <!--
+Script to remove the notebook prompt:
+In[12]
+Out[12]
+-->
+   <script>
+    var prompts = document.getElementsByClassName('prompt');
+
+    while(prompts[0]) {
+    prompts[0].parentNode.removeChild(prompts[0]);
+    }
+   </script>
+   <div class="container">
+    <div class="navbar-static-bottom" id="share">
+    </div>
+    <script>
+     $("#share").jsSocials({
+                    shares: ["email", "twitter", "facebook", "linkedin", "pinterest", "stumbleupon", "whatsapp"]
+                });
+    </script>
+    <div id="disqus_thread">
+    </div>
+    <script>
+     (function() { // DON'T EDIT BELOW THIS LINE
+                var d = document, s = d.createElement('script');
+                    s.src = 'https://hemanta212.disqus.com/embed.js';
+                s.setAttribute('data-timestamp', +new Date());
+                (d.head || d.body).appendChild(s);
+                })();
+    </script>
+    <noscript>
+     Please enable JavaScript to view the
+     <a href="https://disqus.com/?ref_noscript">
+      comments powered by Disqus.
+     </a>
+    </noscript>
+    <script async="" id="dsq-count-scr" src="//hemanta212.disqus.com/count.js">
+    </script>
+   </div>
+   <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?lang=css&amp;lag=html&amp;lang=py&amp;lang=sh&amp;lang=bsh&amp;lang=js&amp;">
+   </script>
+   <link href="../../assets/css/light_theme.css" rel="stylesheet"/>
+  </div>
+ </body>
+</html>

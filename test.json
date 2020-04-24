@@ -1,0 +1,10 @@
+{
+  "blog_dir": "/home/runner/work/test/test",
+  "blog_posts_dir": ".",
+  "blog_images_dir": "images/",
+  "templates_dir": null,
+  "working_dir": null,
+  "google_analytics_id": null,
+  "disqus_username": "hemanta212",
+  "default": true
+}

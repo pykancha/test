@@ -1,0 +1,1204 @@
+<!DOCTYPE html>
+<html>
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="IE=edge" http-equiv="X-UA-Compatible"/>
+  <meta content="width=device-width, initial-scale=1" name="viewport"/>
+  <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async="" src="https://www.googletagmanager.com/gtag/js?id=None">
+  </script>
+  <script>
+   window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'None');
+  </script>
+  <meta content="" name="description"/>
+  <meta content="Hemanta Sharma" name="author"/>
+  <title>
+   Visualising Electricity Access Over Space and Time
+  </title>
+  <link href="../../assets/css/bootstrap.min.css" rel="stylesheet"/>
+  <link href="../../assets/css/custom.css" rel="stylesheet"/>
+  <script async="" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS_HTML" type="text/javascript">
+  </script>
+  <!-- MathJax configuration -->
+  <script type="text/x-mathjax-config">
+   MathJax.Hub.Config({
+                tex2jax: {
+                    inlineMath: [ ["$","$"], ["\\(","\\)"] ],
+                    displayMath: [ ["$$",'$$'], ["\\[","\\]"] ],
+                    processEscapes: true,
+                    processEnvironments: true
+                },
+                // Center justify equations in code and markdown cells. Elsewhere
+                // we use CSS to left justify single line equations in code cells.
+                displayAlign: 'center',
+                "HTML-CSS": {
+                    styles: {'.MathJax_Display': {"margin": 0}},
+                    linebreaks: { automatic: true }
+                }
+            });
+  </script>
+ </head>
+ <body>
+  <nav class="navbar navbar-default">
+   <div class="container text-center">
+    <div class="navbar-collapse" id="navbar">
+     <ul class="nav navbar-nav">
+      <li>
+       <a href="../../index.html">
+        Home
+       </a>
+      </li>
+      <li>
+       <a href="../index.html">
+        Blog
+       </a>
+      </li>
+      <li>
+       <a href="../../projects.html/">
+        Projects
+       </a>
+      </li>
+     </ul>
+    </div>
+   </div>
+  </nav>
+  <div id="content">
+   <div class="cell border-box-sizing text_cell rendered">
+    <div class="prompt input_prompt">
+    </div>
+    <div class="inner_cell">
+     <div class="text_cell_render border-box-sizing rendered_html">
+      <h1 id="Visualising-Electricity-Access-Over-Space-and-Time">
+       Visualising Electricity Access Over Space and Time
+       <a class="anchor-link" href="#Visualising-Electricity-Access-Over-Space-and-Time">
+        &para;
+       </a>
+      </h1>
+     </div>
+    </div>
+   </div>
+   <div class="cell border-box-sizing text_cell rendered">
+    <div class="prompt input_prompt">
+    </div>
+    <div class="inner_cell">
+     <div class="text_cell_render border-box-sizing rendered_html">
+      <p>
+       In this post, I'll explore electricity access, i.e. globally what fraction of people have access to electricity. Beyond the goal of finding the electricity access, this post will also serve to illustrate how the
+       <code>
+        coolness
+       </code>
+       coefficient of the Python visualisation ecosystem!
+      </p>
+      <p>
+       I'll be using data from World Bank for electricity access. See the image below for the
+       <a href="https://data.worldbank.org/indicator/EG.ELC.ACCS.ZS">
+        corresponding page
+       </a>
+       .
+      </p>
+      <p>
+       <img alt="" src="../images/2018/map-electricity-access/world-bank.png"/>
+      </p>
+     </div>
+    </div>
+   </div>
+   <div class="cell border-box-sizing text_cell rendered">
+    <div class="prompt input_prompt">
+    </div>
+    <div class="inner_cell">
+     <div class="text_cell_render border-box-sizing rendered_html">
+      <h3 id="Downloading-World-Bank-data">
+       Downloading World Bank data
+       <a class="anchor-link" href="#Downloading-World-Bank-data">
+        &para;
+       </a>
+      </h3>
+     </div>
+    </div>
+   </div>
+   <div class="cell border-box-sizing text_cell rendered">
+    <div class="prompt input_prompt">
+    </div>
+    <div class="inner_cell">
+     <div class="text_cell_render border-box-sizing rendered_html">
+      <p>
+       Now, a Python package called
+       <a href="http://wbdata.readthedocs.io">
+        <code>
+         wbdata
+        </code>
+       </a>
+       provides a fairly easy way to access World Bank data. I'd be using it to get data in Pandas
+       <code>
+        DataFrame
+       </code>
+       .
+      </p>
+     </div>
+    </div>
+   </div>
+   <div class="cell border-box-sizing code_cell rendered">
+    <div class="input">
+     <div class="prompt input_prompt">
+      In&nbsp;[1]:
+     </div>
+     <div class="inner_cell">
+      <div class="input_area">
+       <div class="highlight hl-ipython3">
+        <pre class="prettyprint"><span></span><span class="o">%</span><span class="n">matplotlib</span> <span class="n">inline</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">wbdata</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">datetime</span>
+<span class="n">data_date</span> <span class="o">=</span> <span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span><span class="mi">1990</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2016</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+<span class="n">df_elec</span> <span class="o">=</span> <span class="n">wbdata</span><span class="o">.</span><span class="n">get_data</span><span class="p">(</span><span class="s2">"EG.ELC.ACCS.ZS"</span><span class="p">,</span> <span class="n">pandas</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">data_date</span><span class="o">=</span><span class="n">data_date</span><span class="p">)</span>
+</pre>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+   <div class="cell border-box-sizing code_cell rendered">
+    <div class="input">
+     <div class="prompt input_prompt">
+      In&nbsp;[2]:
+     </div>
+     <div class="inner_cell">
+      <div class="input_area">
+       <div class="highlight hl-ipython3">
+        <pre class="prettyprint"><span></span><span class="n">df_elec</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre>
+       </div>
+      </div>
+     </div>
+    </div>
+    <div class="output_wrapper">
+     <div class="output">
+      <div class="output_area">
+       <div class="prompt output_prompt">
+        Out[2]:
+       </div>
+       <div class="output_text output_subarea output_execute_result">
+        <pre class="prettyprint">country     date
+Arab World  2016    88.768654
+            2015    88.517967
+            2014    88.076774
+            2013    88.389705
+            2012    87.288244
+Name: value, dtype: float64</pre>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+   <div class="cell border-box-sizing text_cell rendered">
+    <div class="prompt input_prompt">
+    </div>
+    <div class="inner_cell">
+     <div class="text_cell_render border-box-sizing rendered_html">
+      <h3 id="Downloading-Geodata-and-Reading-Using-GeoPandas">
+       Downloading Geodata and Reading Using GeoPandas
+       <a class="anchor-link" href="#Downloading-Geodata-and-Reading-Using-GeoPandas">
+        &para;
+       </a>
+      </h3>
+     </div>
+    </div>
+   </div>
+   <div class="cell border-box-sizing text_cell rendered">
+    <div class="prompt input_prompt">
+    </div>
+    <div class="inner_cell">
+     <div class="text_cell_render border-box-sizing rendered_html">
+      <p>
+       I'd now be downloading
+       <code>
+        shapefile
+       </code>
+       data for different countries. This will help us to spatially plot the data for the different countries.
+      </p>
+     </div>
+    </div>
+   </div>
+   <div class="cell border-box-sizing code_cell rendered">
+    <div class="input">
+     <div class="prompt input_prompt">
+      In&nbsp;[4]:
+     </div>
+     <div class="inner_cell">
+      <div class="input_area">
+       <div class="highlight hl-ipython3">
+        <pre class="prettyprint"><span></span><span class="err">!</span><span class="n">wget</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">naciscdn</span><span class="o">.</span><span class="n">org</span><span class="o">/</span><span class="n">naturalearth</span><span class="o">/</span><span class="mi">10</span><span class="n">m</span><span class="o">/</span><span class="n">cultural</span><span class="o">/</span><span class="n">ne_10m_admin_0_countries_lakes</span><span class="o">.</span><span class="n">zip</span>
+</pre>
+       </div>
+      </div>
+     </div>
+    </div>
+    <div class="output_wrapper">
+     <div class="output">
+      <div class="output_area">
+       <div class="prompt">
+       </div>
+       <div class="output_subarea output_stream output_stdout output_text">
+        <pre class="prettyprint">--2018-06-26 15:52:50--  http://naciscdn.org/naturalearth/10m/cultural/ne_10m_admin_0_countries_lakes.zip
+Resolving naciscdn.org (naciscdn.org)... 146.201.97.163
+Connecting to naciscdn.org (naciscdn.org)|146.201.97.163|:80... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 5077755 (4.8M) [application/x-zip-compressed]
+Saving to: &lsquo;ne_10m_admin_0_countries_lakes.zip&rsquo;
+
+ne_10m_admin_0_coun 100%[===================&gt;]   4.84M   246KB/s    in 22s     
+
+2018-06-26 15:53:12 (228 KB/s) - &lsquo;ne_10m_admin_0_countries_lakes.zip&rsquo; saved [5077755/5077755]
+
+</pre>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+   <div class="cell border-box-sizing text_cell rendered">
+    <div class="prompt input_prompt">
+    </div>
+    <div class="inner_cell">
+     <div class="text_cell_render border-box-sizing rendered_html">
+      <h4 id="Extracting-shapefile">
+       Extracting shapefile
+       <a class="anchor-link" href="#Extracting-shapefile">
+        &para;
+       </a>
+      </h4>
+     </div>
+    </div>
+   </div>
+   <div class="cell border-box-sizing code_cell rendered">
+    <div class="input">
+     <div class="prompt input_prompt">
+      In&nbsp;[5]:
+     </div>
+     <div class="inner_cell">
+      <div class="input_area">
+       <div class="highlight hl-ipython3">
+        <pre class="prettyprint"><span></span><span class="kn">import</span> <span class="nn">zipfile</span>
+<span class="n">zip_ref</span> <span class="o">=</span> <span class="n">zipfile</span><span class="o">.</span><span class="n">ZipFile</span><span class="p">(</span><span class="s1">'ne_10m_admin_0_countries_lakes.zip'</span><span class="p">,</span> <span class="s1">'r'</span><span class="p">)</span>
+<span class="n">zip_ref</span><span class="o">.</span><span class="n">extractall</span><span class="p">(</span><span class="s1">'.'</span><span class="p">)</span>
+<span class="n">zip_ref</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</pre>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+   <div class="cell border-box-sizing code_cell rendered">
+    <div class="input">
+     <div class="prompt input_prompt">
+      In&nbsp;[6]:
+     </div>
+     <div class="inner_cell">
+      <div class="input_area">
+       <div class="highlight hl-ipython3">
+        <pre class="prettyprint"><span></span><span class="kn">import</span> <span class="nn">geopandas</span> <span class="k">as</span> <span class="nn">gpd</span>
+<span class="n">gdf</span> <span class="o">=</span> <span class="n">gpd</span><span class="o">.</span><span class="n">read_file</span><span class="p">(</span><span class="s1">'ne_10m_admin_0_countries_lakes.shp'</span><span class="p">)[[</span><span class="s1">'ADM0_A3'</span><span class="p">,</span> <span class="s1">'geometry'</span><span class="p">]]</span>
+</pre>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+   <div class="cell border-box-sizing code_cell rendered">
+    <div class="input">
+     <div class="prompt input_prompt">
+      In&nbsp;[7]:
+     </div>
+     <div class="inner_cell">
+      <div class="input_area">
+       <div class="highlight hl-ipython3">
+        <pre class="prettyprint"><span></span><span class="n">gdf</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre>
+       </div>
+      </div>
+     </div>
+    </div>
+    <div class="output_wrapper">
+     <div class="output">
+      <div class="output_area">
+       <div class="prompt output_prompt">
+        Out[7]:
+       </div>
+       <div class="output_html rendered_html output_subarea output_execute_result">
+        <div>
+         <style scoped="">
+          .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+         </style>
+         <table border="1" class="dataframe">
+          <thead>
+           <tr style="text-align: right;">
+            <th>
+            </th>
+            <th>
+             ADM0_A3
+            </th>
+            <th>
+             geometry
+            </th>
+           </tr>
+          </thead>
+          <tbody>
+           <tr>
+            <th>
+             0
+            </th>
+            <td>
+             IDN
+            </td>
+            <td>
+             (POLYGON ((117.7036079039552 4.163414542001791...
+            </td>
+           </tr>
+           <tr>
+            <th>
+             1
+            </th>
+            <td>
+             MYS
+            </td>
+            <td>
+             (POLYGON ((117.7036079039552 4.163414542001791...
+            </td>
+           </tr>
+           <tr>
+            <th>
+             2
+            </th>
+            <td>
+             CHL
+            </td>
+            <td>
+             (POLYGON ((-69.51008875199994 -17.506588197999...
+            </td>
+           </tr>
+           <tr>
+            <th>
+             3
+            </th>
+            <td>
+             BOL
+            </td>
+            <td>
+             POLYGON ((-69.51008875199994 -17.5065881979999...
+            </td>
+           </tr>
+           <tr>
+            <th>
+             4
+            </th>
+            <td>
+             PER
+            </td>
+            <td>
+             (POLYGON ((-69.51008875199994 -17.506588197999...
+            </td>
+           </tr>
+          </tbody>
+         </table>
+        </div>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+   <div class="cell border-box-sizing text_cell rendered">
+    <div class="prompt input_prompt">
+    </div>
+    <div class="inner_cell">
+     <div class="text_cell_render border-box-sizing rendered_html">
+      <h3 id="Visualising-electricity-access-in-2016">
+       Visualising electricity access in 2016
+       <a class="anchor-link" href="#Visualising-electricity-access-in-2016">
+        &para;
+       </a>
+      </h3>
+     </div>
+    </div>
+   </div>
+   <div class="cell border-box-sizing text_cell rendered">
+    <div class="prompt input_prompt">
+    </div>
+    <div class="inner_cell">
+     <div class="text_cell_render border-box-sizing rendered_html">
+      <h4 id="Getting-electricity-access-data-for-2016">
+       Getting electricity access data for 2016
+       <a class="anchor-link" href="#Getting-electricity-access-data-for-2016">
+        &para;
+       </a>
+      </h4>
+     </div>
+    </div>
+   </div>
+   <div class="cell border-box-sizing code_cell rendered">
+    <div class="input">
+     <div class="prompt input_prompt">
+      In&nbsp;[8]:
+     </div>
+     <div class="inner_cell">
+      <div class="input_area">
+       <div class="highlight hl-ipython3">
+        <pre class="prettyprint"><span></span><span class="n">df_2016</span> <span class="o">=</span> <span class="n">df_elec</span><span class="o">.</span><span class="n">unstack</span><span class="p">()[[</span><span class="s1">'2016'</span><span class="p">]]</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span>
+</pre>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+   <div class="cell border-box-sizing code_cell rendered">
+    <div class="input">
+     <div class="prompt input_prompt">
+      In&nbsp;[9]:
+     </div>
+     <div class="inner_cell">
+      <div class="input_area">
+       <div class="highlight hl-ipython3">
+        <pre class="prettyprint"><span></span><span class="n">df_2016</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre>
+       </div>
+      </div>
+     </div>
+    </div>
+    <div class="output_wrapper">
+     <div class="output">
+      <div class="output_area">
+       <div class="prompt output_prompt">
+        Out[9]:
+       </div>
+       <div class="output_html rendered_html output_subarea output_execute_result">
+        <div>
+         <style scoped="">
+          .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+         </style>
+         <table border="1" class="dataframe">
+          <thead>
+           <tr style="text-align: right;">
+            <th>
+             date
+            </th>
+            <th>
+             2016
+            </th>
+           </tr>
+           <tr>
+            <th>
+             country
+            </th>
+            <th>
+            </th>
+           </tr>
+          </thead>
+          <tbody>
+           <tr>
+            <th>
+             Afghanistan
+            </th>
+            <td>
+             84.137138
+            </td>
+           </tr>
+           <tr>
+            <th>
+             Albania
+            </th>
+            <td>
+             100.000000
+            </td>
+           </tr>
+           <tr>
+            <th>
+             Algeria
+            </th>
+            <td>
+             99.439568
+            </td>
+           </tr>
+           <tr>
+            <th>
+             Andorra
+            </th>
+            <td>
+             100.000000
+            </td>
+           </tr>
+           <tr>
+            <th>
+             Angola
+            </th>
+            <td>
+             40.520607
+            </td>
+           </tr>
+          </tbody>
+         </table>
+        </div>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+   <div class="cell border-box-sizing text_cell rendered">
+    <div class="prompt input_prompt">
+    </div>
+    <div class="inner_cell">
+     <div class="text_cell_render border-box-sizing rendered_html">
+      <p>
+       In order to visualise electricity access data over the map, we would have to join the GeoPandas object
+       <code>
+        gdf
+       </code>
+       and
+       <code>
+        df_elec
+       </code>
+      </p>
+     </div>
+    </div>
+   </div>
+   <div class="cell border-box-sizing text_cell rendered">
+    <div class="prompt input_prompt">
+    </div>
+    <div class="inner_cell">
+     <div class="text_cell_render border-box-sizing rendered_html">
+      <h4 id="Joining-gdf-and-df_2016">
+       Joining
+       <code>
+        gdf
+       </code>
+       and
+       <code>
+        df_2016
+       </code>
+       <a class="anchor-link" href="#Joining-gdf-and-df_2016">
+        &para;
+       </a>
+      </h4>
+     </div>
+    </div>
+   </div>
+   <div class="cell border-box-sizing text_cell rendered">
+    <div class="prompt input_prompt">
+    </div>
+    <div class="inner_cell">
+     <div class="text_cell_render border-box-sizing rendered_html">
+      <p>
+       Now,
+       <code>
+        gdf
+       </code>
+       uses
+       <code>
+        alpha_3
+       </code>
+       codes for country names like AFG, etc., whereas
+       <code>
+        df_2016
+       </code>
+       uses country names. We will thus use
+       <code>
+        pycountry
+       </code>
+       package to get code names corresponding to countries in
+       <code>
+        df_2016
+       </code>
+       as shown in this
+       <a href="https://stackoverflow.com/questions/16253060/how-to-convert-country-names-to-iso-3166-1-alpha-2-values-using-python">
+        StackOverflow post
+       </a>
+       .
+      </p>
+     </div>
+    </div>
+   </div>
+   <div class="cell border-box-sizing code_cell rendered">
+    <div class="input">
+     <div class="prompt input_prompt">
+      In&nbsp;[11]:
+     </div>
+     <div class="inner_cell">
+      <div class="input_area">
+       <div class="highlight hl-ipython3">
+        <pre class="prettyprint"><span></span><span class="kn">import</span> <span class="nn">pycountry</span>
+<span class="n">countries</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="k">for</span> <span class="n">country</span> <span class="ow">in</span> <span class="n">pycountry</span><span class="o">.</span><span class="n">countries</span><span class="p">:</span>
+    <span class="n">countries</span><span class="p">[</span><span class="n">country</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">country</span><span class="o">.</span><span class="n">alpha_3</span>
+<span class="n">codes</span> <span class="o">=</span> <span class="p">[</span><span class="n">countries</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">country</span><span class="p">,</span> <span class="s1">'Unknown code'</span><span class="p">)</span> <span class="k">for</span> <span class="n">country</span> <span class="ow">in</span> <span class="n">df_2016</span><span class="o">.</span><span class="n">index</span><span class="p">]</span>
+<span class="n">df_2016</span><span class="p">[</span><span class="s1">'Code'</span><span class="p">]</span> <span class="o">=</span> <span class="n">codes</span>
+</pre>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+   <div class="cell border-box-sizing code_cell rendered">
+    <div class="input">
+     <div class="prompt input_prompt">
+      In&nbsp;[12]:
+     </div>
+     <div class="inner_cell">
+      <div class="input_area">
+       <div class="highlight hl-ipython3">
+        <pre class="prettyprint"><span></span><span class="n">df_2016</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre>
+       </div>
+      </div>
+     </div>
+    </div>
+    <div class="output_wrapper">
+     <div class="output">
+      <div class="output_area">
+       <div class="prompt output_prompt">
+        Out[12]:
+       </div>
+       <div class="output_html rendered_html output_subarea output_execute_result">
+        <div>
+         <style scoped="">
+          .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+         </style>
+         <table border="1" class="dataframe">
+          <thead>
+           <tr style="text-align: right;">
+            <th>
+             date
+            </th>
+            <th>
+             2016
+            </th>
+            <th>
+             Code
+            </th>
+           </tr>
+           <tr>
+            <th>
+             country
+            </th>
+            <th>
+            </th>
+            <th>
+            </th>
+           </tr>
+          </thead>
+          <tbody>
+           <tr>
+            <th>
+             Afghanistan
+            </th>
+            <td>
+             84.137138
+            </td>
+            <td>
+             AFG
+            </td>
+           </tr>
+           <tr>
+            <th>
+             Albania
+            </th>
+            <td>
+             100.000000
+            </td>
+            <td>
+             ALB
+            </td>
+           </tr>
+           <tr>
+            <th>
+             Algeria
+            </th>
+            <td>
+             99.439568
+            </td>
+            <td>
+             DZA
+            </td>
+           </tr>
+           <tr>
+            <th>
+             Andorra
+            </th>
+            <td>
+             100.000000
+            </td>
+            <td>
+             AND
+            </td>
+           </tr>
+           <tr>
+            <th>
+             Angola
+            </th>
+            <td>
+             40.520607
+            </td>
+            <td>
+             AGO
+            </td>
+           </tr>
+          </tbody>
+         </table>
+        </div>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+   <div class="cell border-box-sizing text_cell rendered">
+    <div class="prompt input_prompt">
+    </div>
+    <div class="inner_cell">
+     <div class="text_cell_render border-box-sizing rendered_html">
+      <p>
+       Now, we can join the two data sources
+      </p>
+     </div>
+    </div>
+   </div>
+   <div class="cell border-box-sizing code_cell rendered">
+    <div class="input">
+     <div class="prompt input_prompt">
+      In&nbsp;[13]:
+     </div>
+     <div class="inner_cell">
+      <div class="input_area">
+       <div class="highlight hl-ipython3">
+        <pre class="prettyprint"><span></span><span class="n">merged_df_2016</span> <span class="o">=</span> <span class="n">gpd</span><span class="o">.</span><span class="n">GeoDataFrame</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">gdf</span><span class="p">,</span> <span class="n">df_2016</span><span class="p">,</span> <span class="n">left_on</span><span class="o">=</span><span class="s1">'ADM0_A3'</span><span class="p">,</span> <span class="n">right_on</span><span class="o">=</span><span class="s1">'Code'</span><span class="p">))</span>
+</pre>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+   <div class="cell border-box-sizing code_cell rendered">
+    <div class="input">
+     <div class="prompt input_prompt">
+      In&nbsp;[14]:
+     </div>
+     <div class="inner_cell">
+      <div class="input_area">
+       <div class="highlight hl-ipython3">
+        <pre class="prettyprint"><span></span><span class="n">merged_df_2016</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre>
+       </div>
+      </div>
+     </div>
+    </div>
+    <div class="output_wrapper">
+     <div class="output">
+      <div class="output_area">
+       <div class="prompt output_prompt">
+        Out[14]:
+       </div>
+       <div class="output_html rendered_html output_subarea output_execute_result">
+        <div>
+         <style scoped="">
+          .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+         </style>
+         <table border="1" class="dataframe">
+          <thead>
+           <tr style="text-align: right;">
+            <th>
+            </th>
+            <th>
+             ADM0_A3
+            </th>
+            <th>
+             geometry
+            </th>
+            <th>
+             2016
+            </th>
+            <th>
+             Code
+            </th>
+           </tr>
+          </thead>
+          <tbody>
+           <tr>
+            <th>
+             0
+            </th>
+            <td>
+             IDN
+            </td>
+            <td>
+             (POLYGON ((117.7036079039552 4.163414542001791...
+            </td>
+            <td>
+             97.620000
+            </td>
+            <td>
+             IDN
+            </td>
+           </tr>
+           <tr>
+            <th>
+             1
+            </th>
+            <td>
+             MYS
+            </td>
+            <td>
+             (POLYGON ((117.7036079039552 4.163414542001791...
+            </td>
+            <td>
+             100.000000
+            </td>
+            <td>
+             MYS
+            </td>
+           </tr>
+           <tr>
+            <th>
+             2
+            </th>
+            <td>
+             CHL
+            </td>
+            <td>
+             (POLYGON ((-69.51008875199994 -17.506588197999...
+            </td>
+            <td>
+             100.000000
+            </td>
+            <td>
+             CHL
+            </td>
+           </tr>
+           <tr>
+            <th>
+             3
+            </th>
+            <td>
+             PER
+            </td>
+            <td>
+             (POLYGON ((-69.51008875199994 -17.506588197999...
+            </td>
+            <td>
+             94.851746
+            </td>
+            <td>
+             PER
+            </td>
+           </tr>
+           <tr>
+            <th>
+             4
+            </th>
+            <td>
+             ARG
+            </td>
+            <td>
+             (POLYGON ((-68.4486097329999 -52.3466170159999...
+            </td>
+            <td>
+             100.000000
+            </td>
+            <td>
+             ARG
+            </td>
+           </tr>
+          </tbody>
+         </table>
+        </div>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+   <div class="cell border-box-sizing text_cell rendered">
+    <div class="prompt input_prompt">
+    </div>
+    <div class="inner_cell">
+     <div class="text_cell_render border-box-sizing rendered_html">
+      <h4 id="Finally-plotting!">
+       Finally plotting!
+       <a class="anchor-link" href="#Finally-plotting!">
+        &para;
+       </a>
+      </h4>
+     </div>
+    </div>
+   </div>
+   <div class="cell border-box-sizing code_cell rendered">
+    <div class="input">
+     <div class="prompt input_prompt">
+      In&nbsp;[16]:
+     </div>
+     <div class="inner_cell">
+      <div class="input_area">
+       <div class="highlight hl-ipython3">
+        <pre class="prettyprint"><span></span><span class="c1"># Example borrowed from http://ramiro.org/notebook/geopandas-choropleth/</span>
+<span class="n">cmap</span><span class="o">=</span><span class="s1">'OrRd'</span>
+<span class="n">figsize</span> <span class="o">=</span> <span class="p">(</span><span class="mi">16</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+<span class="n">ax</span> <span class="o">=</span> <span class="n">merged_df_2016</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="s1">'2016'</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="n">cmap</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="n">figsize</span><span class="p">,</span><span class="n">legend</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">title</span> <span class="o">=</span> <span class="s1">'Electricity Access(</span><span class="si">% o</span><span class="s1">f population) in </span><span class="si">{}</span><span class="s1">'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">'2016'</span><span class="p">)</span>
+<span class="n">gdf</span><span class="p">[</span><span class="o">~</span><span class="n">gdf</span><span class="o">.</span><span class="n">ADM0_A3</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">merged_df_2016</span><span class="o">.</span><span class="n">ADM0_A3</span><span class="p">)]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">'#fffafa'</span><span class="p">,</span> <span class="n">hatch</span><span class="o">=</span><span class="s1">'///'</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">title</span><span class="p">,</span> <span class="n">fontdict</span><span class="o">=</span><span class="p">{</span><span class="s1">'fontsize'</span><span class="p">:</span> <span class="mi">15</span><span class="p">},</span> <span class="n">loc</span><span class="o">=</span><span class="s1">'left'</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_axis_off</span><span class="p">()</span>
+</pre>
+       </div>
+      </div>
+     </div>
+    </div>
+    <div class="output_wrapper">
+     <div class="output">
+      <div class="output_area">
+       <div class="prompt">
+       </div>
+       <div class="output_png output_subarea">
+        <img src="../images/2018/map-electricity-access/image_2.png"/>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+   <div class="cell border-box-sizing text_cell rendered">
+    <div class="prompt input_prompt">
+    </div>
+    <div class="inner_cell">
+     <div class="text_cell_render border-box-sizing rendered_html">
+      <h3 id="Creating-animation-for-access-across-time">
+       Creating animation for access across time
+       <a class="anchor-link" href="#Creating-animation-for-access-across-time">
+        &para;
+       </a>
+      </h3>
+     </div>
+    </div>
+   </div>
+   <div class="cell border-box-sizing code_cell rendered">
+    <div class="input">
+     <div class="prompt input_prompt">
+      In&nbsp;[17]:
+     </div>
+     <div class="inner_cell">
+      <div class="input_area">
+       <div class="highlight hl-ipython3">
+        <pre class="prettyprint"><span></span><span class="err">!</span><span class="n">mkdir</span> <span class="o">-</span><span class="n">p</span> <span class="n">elec_access</span>
+</pre>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+   <div class="cell border-box-sizing code_cell rendered">
+    <div class="input">
+     <div class="prompt input_prompt">
+      In&nbsp;[18]:
+     </div>
+     <div class="inner_cell">
+      <div class="input_area">
+       <div class="highlight hl-ipython3">
+        <pre class="prettyprint"><span></span><span class="k">def</span> <span class="nf">save_png_year</span><span class="p">(</span><span class="n">year</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="s2">"elec_access"</span><span class="p">):</span>
+    <span class="n">df_year</span> <span class="o">=</span> <span class="n">df_elec</span><span class="o">.</span><span class="n">unstack</span><span class="p">()[[</span><span class="s1">'</span><span class="si">{}</span><span class="s1">'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">year</span><span class="p">)]]</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span>
+    <span class="n">codes</span> <span class="o">=</span> <span class="p">[</span><span class="n">countries</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">country</span><span class="p">,</span> <span class="s1">'Unknown code'</span><span class="p">)</span> <span class="k">for</span> <span class="n">country</span> <span class="ow">in</span> <span class="n">df_year</span><span class="o">.</span><span class="n">index</span><span class="p">]</span>
+    <span class="n">df_year</span><span class="p">[</span><span class="s1">'Code'</span><span class="p">]</span> <span class="o">=</span> <span class="n">codes</span>
+    <span class="n">merged_df_year</span> <span class="o">=</span> <span class="n">gpd</span><span class="o">.</span><span class="n">GeoDataFrame</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">gdf</span><span class="p">,</span> <span class="n">df_year</span><span class="p">,</span> <span class="n">left_on</span><span class="o">=</span><span class="s1">'ADM0_A3'</span><span class="p">,</span> <span class="n">right_on</span><span class="o">=</span><span class="s1">'Code'</span><span class="p">))</span>
+    <span class="n">figsize</span> <span class="o">=</span> <span class="p">(</span><span class="mi">16</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+    <span class="n">ax</span> <span class="o">=</span> <span class="n">merged_df_year</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="s1">'</span><span class="si">{}</span><span class="s1">'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">year</span><span class="p">),</span> <span class="n">cmap</span><span class="o">=</span><span class="n">cmap</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="n">figsize</span><span class="p">,</span><span class="n">legend</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">vmin</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="mf">100.0</span><span class="p">)</span>
+    <span class="n">title</span> <span class="o">=</span> <span class="s1">'Electricity Access(</span><span class="si">% o</span><span class="s1">f population) in </span><span class="si">{}</span><span class="s1">'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">year</span><span class="p">)</span>
+    <span class="n">gdf</span><span class="p">[</span><span class="o">~</span><span class="n">gdf</span><span class="o">.</span><span class="n">ADM0_A3</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">merged_df_year</span><span class="o">.</span><span class="n">ADM0_A3</span><span class="p">)]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">'#fffafa'</span><span class="p">,</span> <span class="n">hatch</span><span class="o">=</span><span class="s1">'///'</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">title</span><span class="p">,</span> <span class="n">fontdict</span><span class="o">=</span><span class="p">{</span><span class="s1">'fontsize'</span><span class="p">:</span> <span class="mi">15</span><span class="p">},</span> <span class="n">loc</span><span class="o">=</span><span class="s1">'left'</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_axis_off</span><span class="p">()</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s1">'</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">.png'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">year</span><span class="p">),</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">300</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</pre>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+   <div class="cell border-box-sizing code_cell rendered">
+    <div class="input">
+     <div class="prompt input_prompt">
+      In&nbsp;[19]:
+     </div>
+     <div class="inner_cell">
+      <div class="input_area">
+       <div class="highlight hl-ipython3">
+        <pre class="prettyprint"><span></span><span class="k">for</span> <span class="n">year</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1990</span><span class="p">,</span> <span class="mi">2017</span><span class="p">):</span>
+    <span class="n">save_png_year</span><span class="p">(</span><span class="n">year</span><span class="p">)</span>
+</pre>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+   <div class="cell border-box-sizing code_cell rendered">
+    <div class="input">
+     <div class="prompt input_prompt">
+      In&nbsp;[20]:
+     </div>
+     <div class="inner_cell">
+      <div class="input_area">
+       <div class="highlight hl-ipython3">
+        <pre class="prettyprint"><span></span><span class="c1"># Borrowed from http://www.kevinwampler.com/blog/2016/09/10/creating-animated-gifs-using-python.html</span>
+<span class="k">def</span> <span class="nf">create_gifv</span><span class="p">(</span><span class="n">input_files</span><span class="p">,</span> <span class="n">output_base_name</span><span class="p">,</span> <span class="n">fps</span><span class="p">):</span>
+    <span class="kn">import</span> <span class="nn">imageio</span>
+    <span class="n">output_extensions</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"gif"</span><span class="p">]</span>
+    <span class="n">input_filenames</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'elec_access/</span><span class="si">{}</span><span class="s1">.png'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">year</span><span class="p">)</span> <span class="k">for</span> <span class="n">year</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1990</span><span class="p">,</span> <span class="mi">2017</span><span class="p">)]</span>
+
+    <span class="n">poster_writer</span> <span class="o">=</span> <span class="n">imageio</span><span class="o">.</span><span class="n">get_writer</span><span class="p">(</span><span class="s2">"</span><span class="si">{}</span><span class="s2">.png"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">output_base_name</span><span class="p">),</span> <span class="n">mode</span><span class="o">=</span><span class="s1">'i'</span><span class="p">)</span>
+    <span class="n">video_writers</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">imageio</span><span class="o">.</span><span class="n">get_writer</span><span class="p">(</span><span class="s2">"</span><span class="si">{}</span><span class="s2">.</span><span class="si">{}</span><span class="s2">"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">output_base_name</span><span class="p">,</span> <span class="n">ext</span><span class="p">),</span> <span class="n">mode</span><span class="o">=</span><span class="s1">'I'</span><span class="p">,</span> <span class="n">fps</span><span class="o">=</span><span class="n">fps</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">ext</span> <span class="ow">in</span> <span class="n">output_extensions</span><span class="p">]</span>
+
+    <span class="n">is_first</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="k">for</span> <span class="n">filename</span> <span class="ow">in</span> <span class="n">input_filenames</span><span class="p">:</span>
+        <span class="n">img</span> <span class="o">=</span> <span class="n">imageio</span><span class="o">.</span><span class="n">imread</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">writer</span> <span class="ow">in</span> <span class="n">video_writers</span><span class="p">:</span>
+            <span class="n">writer</span><span class="o">.</span><span class="n">append_data</span><span class="p">(</span><span class="n">img</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">is_first</span><span class="p">:</span>
+            <span class="n">poster_writer</span><span class="o">.</span><span class="n">append_data</span><span class="p">(</span><span class="n">img</span><span class="p">)</span>
+
+        <span class="n">is_first</span> <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="k">for</span> <span class="n">writer</span> <span class="ow">in</span> <span class="n">video_writers</span> <span class="o">+</span> <span class="p">[</span><span class="n">poster_writer</span><span class="p">]:</span>
+        <span class="n">writer</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</pre>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+   <div class="cell border-box-sizing code_cell rendered">
+    <div class="input">
+     <div class="prompt input_prompt">
+      In&nbsp;[22]:
+     </div>
+     <div class="inner_cell">
+      <div class="input_area">
+       <div class="highlight hl-ipython3">
+        <pre class="prettyprint"><span></span><span class="n">create_gifv</span><span class="p">(</span><span class="s2">"elec_access/*.png"</span><span class="p">,</span> <span class="s2">"electricity_access"</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+</pre>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+   <div class="cell border-box-sizing text_cell rendered">
+    <div class="prompt input_prompt">
+    </div>
+    <div class="inner_cell">
+     <div class="text_cell_render border-box-sizing rendered_html">
+      <p>
+       <img alt="" src="../images/2018/map-electricity-access/electricity_access.gif"/>
+      </p>
+     </div>
+    </div>
+   </div>
+   <div class="cell border-box-sizing text_cell rendered">
+    <div class="prompt input_prompt">
+    </div>
+    <div class="inner_cell">
+     <div class="text_cell_render border-box-sizing rendered_html">
+      <p>
+       Across Africa and SE Asia, one can clearly see a gradual improvement in access! Hope you had fun reading this post :)
+      </p>
+     </div>
+    </div>
+   </div>
+   <script crossorigin="anonymous" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" src="https://code.jquery.com/jquery-3.2.1.min.js">
+   </script>
+   <script src="https://cdn.jsdelivr.net/jquery.jssocials/1.4.0/jssocials.min.js" type="text/javascript">
+   </script>
+   <link href="https://cdn.jsdelivr.net/jquery.jssocials/1.4.0/jssocials.css" rel="stylesheet" type="text/css"/>
+   <link href="https://cdn.jsdelivr.net/jquery.jssocials/1.4.0/jssocials-theme-flat.css" rel="stylesheet" type="text/css"/>
+   <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"/>
+   <!--
+Script to remove the notebook prompt:
+In[12]
+Out[12]
+-->
+   <script>
+    var prompts = document.getElementsByClassName('prompt');
+
+    while(prompts[0]) {
+    prompts[0].parentNode.removeChild(prompts[0]);
+    }
+   </script>
+   <div class="container">
+    <div class="navbar-static-bottom" id="share">
+    </div>
+    <script>
+     $("#share").jsSocials({
+                    shares: ["email", "twitter", "facebook", "linkedin", "pinterest", "stumbleupon", "whatsapp"]
+                });
+    </script>
+    <div id="disqus_thread">
+    </div>
+    <script>
+     (function() { // DON'T EDIT BELOW THIS LINE
+                var d = document, s = d.createElement('script');
+                    s.src = 'https://hemanta212.disqus.com/embed.js';
+                s.setAttribute('data-timestamp', +new Date());
+                (d.head || d.body).appendChild(s);
+                })();
+    </script>
+    <noscript>
+     Please enable JavaScript to view the
+     <a href="https://disqus.com/?ref_noscript">
+      comments powered by Disqus.
+     </a>
+    </noscript>
+    <script async="" id="dsq-count-scr" src="//hemanta212.disqus.com/count.js">
+    </script>
+   </div>
+   <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?lang=css&amp;lag=html&amp;lang=py&amp;lang=sh&amp;lang=bsh&amp;lang=js&amp;">
+   </script>
+   <link href="../../assets/css/light_theme.css" rel="stylesheet"/>
+  </div>
+ </body>
+</html>

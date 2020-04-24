@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html>
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="IE=edge" http-equiv="X-UA-Compatible"/>
+  <meta content="width=device-width, initial-scale=1" name="viewport"/>
+  <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async="" src="https://www.googletagmanager.com/gtag/js?id=None">
+  </script>
+  <script>
+   window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'None');
+  </script>
+  <meta content="" name="description"/>
+  <meta content="Hemanta Sharma" name="author"/>
+  <title>
+   test
+  </title>
+  <link href="../../assets/css/bootstrap.min.css" rel="stylesheet"/>
+  <link href="../../assets/css/custom.css" rel="stylesheet"/>
+  <script async="" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS_HTML" type="text/javascript">
+  </script>
+  <!-- MathJax configuration -->
+  <script type="text/x-mathjax-config">
+   MathJax.Hub.Config({
+                tex2jax: {
+                    inlineMath: [ ["$","$"], ["\\(","\\)"] ],
+                    displayMath: [ ["$$",'$$'], ["\\[","\\]"] ],
+                    processEscapes: true,
+                    processEnvironments: true
+                },
+                // Center justify equations in code and markdown cells. Elsewhere
+                // we use CSS to left justify single line equations in code cells.
+                displayAlign: 'center',
+                "HTML-CSS": {
+                    styles: {'.MathJax_Display': {"margin": 0}},
+                    linebreaks: { automatic: true }
+                }
+            });
+  </script>
+ </head>
+ <body>
+  <nav class="navbar navbar-default">
+   <div class="container text-center">
+    <div class="navbar-collapse" id="navbar">
+     <ul class="nav navbar-nav">
+      <li>
+       <a href="../../index.html">
+        Home
+       </a>
+      </li>
+      <li>
+       <a href="../index.html">
+        Blog
+       </a>
+      </li>
+      <li>
+       <a href="../../projects.html/">
+        Projects
+       </a>
+      </li>
+     </ul>
+    </div>
+   </div>
+  </nav>
+  <div id="content">
+   <div class="cell border-box-sizing code_cell rendered">
+    <div class="input">
+     <div class="prompt input_prompt">
+      In&nbsp;[1]:
+     </div>
+     <div class="inner_cell">
+      <div class="input_area">
+       <div class="highlight hl-ipython3">
+        <pre class="prettyprint"><span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">folium</span>
+</pre>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+   <div class="cell border-box-sizing code_cell rendered">
+    <div class="input">
+     <div class="prompt input_prompt">
+      In&nbsp;[2]:
+     </div>
+     <div class="inner_cell">
+      <div class="input_area">
+       <div class="highlight hl-ipython3">
+        <pre class="prettyprint"><span></span><span class="o">%</span><span class="n">matplotlib</span> <span class="n">inline</span>
+
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">geopandas</span>
+
+<span class="n">pd</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">display</span><span class="o">.</span><span class="n">max_rows</span> <span class="o">=</span> <span class="mi">10</span>
+</pre>
+       </div>
+      </div>
+     </div>
+    </div>
+    <div class="output_wrapper">
+     <div class="output">
+      <div class="output_area">
+       <div class="prompt">
+       </div>
+       <div class="output_subarea output_text output_error">
+        <pre class="prettyprint">
+<span class="ansi-red-fg">---------------------------------------------------------------------------</span>
+<span class="ansi-red-fg">ImportError</span>                               Traceback (most recent call last)
+<span class="ansi-green-fg">&lt;ipython-input-2-6de75afd7bba&gt;</span> in <span class="ansi-cyan-fg">&lt;module&gt;</span><span class="ansi-blue-fg">()</span>
+<span class="ansi-green-intense-fg ansi-bold">      2</span> 
+<span class="ansi-green-intense-fg ansi-bold">      3</span> <span class="ansi-green-fg">import</span> pandas <span class="ansi-green-fg">as</span> pd
+<span class="ansi-green-fg">----&gt; 4</span><span class="ansi-red-fg"> </span><span class="ansi-green-fg">import</span> geopandas
+<span class="ansi-green-intense-fg ansi-bold">      5</span> 
+<span class="ansi-green-intense-fg ansi-bold">      6</span> pd<span class="ansi-blue-fg">.</span>options<span class="ansi-blue-fg">.</span>display<span class="ansi-blue-fg">.</span>max_rows <span class="ansi-blue-fg">=</span> <span class="ansi-cyan-fg">10</span>
+
+<span class="ansi-green-fg">~/anaconda3/lib/python3.6/site-packages/geopandas/__init__.py</span> in <span class="ansi-cyan-fg">&lt;module&gt;</span><span class="ansi-blue-fg">()</span>
+<span class="ansi-green-intense-fg ansi-bold">      2</span> <span class="ansi-green-fg">from</span> geopandas<span class="ansi-blue-fg">.</span>geodataframe <span class="ansi-green-fg">import</span> GeoDataFrame
+<span class="ansi-green-intense-fg ansi-bold">      3</span> 
+<span class="ansi-green-fg">----&gt; 4</span><span class="ansi-red-fg"> </span><span class="ansi-green-fg">from</span> geopandas<span class="ansi-blue-fg">.</span>io<span class="ansi-blue-fg">.</span>file <span class="ansi-green-fg">import</span> read_file
+<span class="ansi-green-intense-fg ansi-bold">      5</span> <span class="ansi-green-fg">from</span> geopandas<span class="ansi-blue-fg">.</span>io<span class="ansi-blue-fg">.</span>sql <span class="ansi-green-fg">import</span> read_postgis
+<span class="ansi-green-intense-fg ansi-bold">      6</span> <span class="ansi-green-fg">from</span> geopandas<span class="ansi-blue-fg">.</span>tools <span class="ansi-green-fg">import</span> sjoin
+
+<span class="ansi-green-fg">~/anaconda3/lib/python3.6/site-packages/geopandas/io/file.py</span> in <span class="ansi-cyan-fg">&lt;module&gt;</span><span class="ansi-blue-fg">()</span>
+<span class="ansi-green-intense-fg ansi-bold">      1</span> <span class="ansi-green-fg">import</span> os
+<span class="ansi-green-intense-fg ansi-bold">      2</span> 
+<span class="ansi-green-fg">----&gt; 3</span><span class="ansi-red-fg"> </span><span class="ansi-green-fg">import</span> fiona
+<span class="ansi-green-intense-fg ansi-bold">      4</span> <span class="ansi-green-fg">import</span> numpy <span class="ansi-green-fg">as</span> np
+<span class="ansi-green-intense-fg ansi-bold">      5</span> 
+
+<span class="ansi-green-fg">~/anaconda3/lib/python3.6/site-packages/fiona/__init__.py</span> in <span class="ansi-cyan-fg">&lt;module&gt;</span><span class="ansi-blue-fg">()</span>
+<span class="ansi-green-intense-fg ansi-bold">     67</span> <span class="ansi-green-fg">from</span> six <span class="ansi-green-fg">import</span> string_types
+<span class="ansi-green-intense-fg ansi-bold">     68</span> 
+<span class="ansi-green-fg">---&gt; 69</span><span class="ansi-red-fg"> </span><span class="ansi-green-fg">from</span> fiona<span class="ansi-blue-fg">.</span>collection <span class="ansi-green-fg">import</span> Collection<span class="ansi-blue-fg">,</span> BytesCollection<span class="ansi-blue-fg">,</span> vsi_path
+<span class="ansi-green-intense-fg ansi-bold">     70</span> <span class="ansi-green-fg">from</span> fiona<span class="ansi-blue-fg">.</span>_drivers <span class="ansi-green-fg">import</span> driver_count<span class="ansi-blue-fg">,</span> GDALEnv
+<span class="ansi-green-intense-fg ansi-bold">     71</span> <span class="ansi-green-fg">from</span> fiona<span class="ansi-blue-fg">.</span>drvsupport <span class="ansi-green-fg">import</span> supported_drivers
+
+<span class="ansi-green-fg">~/anaconda3/lib/python3.6/site-packages/fiona/collection.py</span> in <span class="ansi-cyan-fg">&lt;module&gt;</span><span class="ansi-blue-fg">()</span>
+<span class="ansi-green-intense-fg ansi-bold">      7</span> 
+<span class="ansi-green-intense-fg ansi-bold">      8</span> <span class="ansi-green-fg">from</span> fiona <span class="ansi-green-fg">import</span> compat
+<span class="ansi-green-fg">----&gt; 9</span><span class="ansi-red-fg"> </span><span class="ansi-green-fg">from</span> fiona<span class="ansi-blue-fg">.</span>ogrext <span class="ansi-green-fg">import</span> Iterator<span class="ansi-blue-fg">,</span> ItemsIterator<span class="ansi-blue-fg">,</span> KeysIterator
+<span class="ansi-green-intense-fg ansi-bold">     10</span> <span class="ansi-green-fg">from</span> fiona<span class="ansi-blue-fg">.</span>ogrext <span class="ansi-green-fg">import</span> Session<span class="ansi-blue-fg">,</span> WritingSession
+<span class="ansi-green-intense-fg ansi-bold">     11</span> from fiona.ogrext import (
+
+<span class="ansi-red-fg">ImportError</span>: dlopen(/Users/nipun/anaconda3/lib/python3.6/site-packages/fiona/ogrext.cpython-36m-darwin.so, 2): Library not loaded: @rpath/libjson-c.2.dylib
+  Referenced from: /Users/nipun/anaconda3/lib/libgdal.20.dylib
+  Reason: image not found</pre>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+   <div class="cell border-box-sizing code_cell rendered">
+    <div class="input">
+     <div class="prompt input_prompt">
+      In&nbsp;[&nbsp;]:
+     </div>
+     <div class="inner_cell">
+      <div class="input_area">
+       <div class="highlight hl-ipython3">
+        <pre class="prettyprint"><span></span>
+</pre>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+   <script crossorigin="anonymous" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" src="https://code.jquery.com/jquery-3.2.1.min.js">
+   </script>
+   <script src="https://cdn.jsdelivr.net/jquery.jssocials/1.4.0/jssocials.min.js" type="text/javascript">
+   </script>
+   <link href="https://cdn.jsdelivr.net/jquery.jssocials/1.4.0/jssocials.css" rel="stylesheet" type="text/css"/>
+   <link href="https://cdn.jsdelivr.net/jquery.jssocials/1.4.0/jssocials-theme-flat.css" rel="stylesheet" type="text/css"/>
+   <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"/>
+   <!--
+Script to remove the notebook prompt:
+In[12]
+Out[12]
+-->
+   <script>
+    var prompts = document.getElementsByClassName('prompt');
+
+    while(prompts[0]) {
+    prompts[0].parentNode.removeChild(prompts[0]);
+    }
+   </script>
+   <div class="container">
+    <div class="navbar-static-bottom" id="share">
+    </div>
+    <script>
+     $("#share").jsSocials({
+                    shares: ["email", "twitter", "facebook", "linkedin", "pinterest", "stumbleupon", "whatsapp"]
+                });
+    </script>
+    <div id="disqus_thread">
+    </div>
+    <script>
+     (function() { // DON'T EDIT BELOW THIS LINE
+                var d = document, s = d.createElement('script');
+                    s.src = 'https://hemanta212.disqus.com/embed.js';
+                s.setAttribute('data-timestamp', +new Date());
+                (d.head || d.body).appendChild(s);
+                })();
+    </script>
+    <noscript>
+     Please enable JavaScript to view the
+     <a href="https://disqus.com/?ref_noscript">
+      comments powered by Disqus.
+     </a>
+    </noscript>
+    <script async="" id="dsq-count-scr" src="//hemanta212.disqus.com/count.js">
+    </script>
+   </div>
+   <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?lang=css&amp;lag=html&amp;lang=py&amp;lang=sh&amp;lang=bsh&amp;lang=js&amp;">
+   </script>
+   <link href="../../assets/css/light_theme.css" rel="stylesheet"/>
+  </div>
+ </body>
+</html>
